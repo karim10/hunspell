@@ -1,6 +1,6 @@
 import express from 'express';
 
-// import { nodehun } from './hunspell';
+import { nodehun } from './hunspell';
 import { SpellRequest } from './types';
 
 
@@ -24,31 +24,30 @@ app.use(
 app.use(express.json({ limit: '50mb' }));
 
 app.get('/', (_req, res) => {
-    return res.send('Hunspell!');
-})
+    return res.send(200);
+});
 
 app.post('/spell', async (req: express.Request<SpellRequest>, res: express.Response) => {
-    // const { locale, words } = req.body as SpellRequest;
-    // // const mispelledWords = words.filter(w => !nodehun.spell(w.str));
-    // const misspelledWords: any = []
-    // const correctWords: any = [];
-    // console.log(words);
+    const { locale, words } = req.body as SpellRequest;
+    const mispelledWords = words.filter(w => !nodehun.spell(w.str));
+    const misspelledWords: any = []
+    const correctWords: any = [];
+    console.log(words);
 
-    // console.log('words received: ', words.length);
-    // console.time("spell_performance");
-    // for (let i = 0; i < words.length; i++) {
-    //     const spellResult = await nodehun.spell(words[i].str);
-    //     if (!spellResult)
-    //         misspelledWords.push(words[i]);
-    //     else correctWords.push(words[i])
-    // }
-    // console.timeEnd("spell_performance");
+    console.log('words received: ', words.length);
+    console.time("spell_performance");
+    for (let i = 0; i < words.length; i++) {
+        const spellResult = await nodehun.spell(words[i].str);
+        if (!spellResult)
+            misspelledWords.push(words[i]);
+        else correctWords.push(words[i])
+    }
+    console.timeEnd("spell_performance");
 
-    // return res.json({
-    //     misspelledWords,
-    //     correctWords
-    // });
-    return res.send('OK!')
+    return res.json({
+        misspelledWords,
+        correctWords
+    });
 })
 
 app.listen(port, () => {

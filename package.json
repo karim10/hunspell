@@ -3,13 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-    "engines": {
-      "node": "v10.16"
-    },
   "scripts": {
     "dev": "nodemon",
     "build": "rimraf ./build && tsc",
-    "start": "npm run build && node build/index.js",
+    "start": "node build/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "node": "nodemon ./src/server.ts",
     "arti": "artillery run hunspell.yml"
@@ -17,8 +14,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.17.8",
-    "@types/node": "^14.14.20",
     "express": "^4.17.1",
     "nodehun": "^3.0.2",
     "rimraf": "^3.0.2",
@@ -26,6 +21,8 @@
     "ts-node": "^9.0.0"
   },
   "devDependencies": {
+    "@types/express": "^4.17.8",
+    "@types/node": "^14.14.20",
     "artillery": "^1.6.1",
     "nodemon": "^2.0.6"
   }
