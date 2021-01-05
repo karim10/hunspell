@@ -23,13 +23,17 @@ app.use(
 
 app.use(express.json({ limit: '50mb' }));
 
+app.get('/', (_req, res) => {
+    return res.send('Hunspell!');
+})
+
 app.post('/spell', async (req: express.Request<SpellRequest>, res: express.Response) => {
     const { locale, words } = req.body as SpellRequest;
     // const mispelledWords = words.filter(w => !nodehun.spell(w.str));
     const misspelledWords: any = []
     const correctWords: any = [];
     console.log(words);
-    
+
     console.log('words received: ', words.length);
     console.time("spell_performance");
     for (let i = 0; i < words.length; i++) {
@@ -39,7 +43,7 @@ app.post('/spell', async (req: express.Request<SpellRequest>, res: express.Respo
         else correctWords.push(words[i])
     }
     console.timeEnd("spell_performance");
-    
+
     return res.json({
         misspelledWords,
         correctWords
@@ -49,7 +53,3 @@ app.post('/spell', async (req: express.Request<SpellRequest>, res: express.Respo
 app.listen(port, () => {
     console.log(`Server listening to ${port} port.`)
 })
-
-
-
-
