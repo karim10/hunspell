@@ -7,7 +7,9 @@
     "dev": "nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "node": "nodemon ./src/server.ts",
+    "arti": "artillery run hunspell.yml"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +20,8 @@
   "devDependencies": {
     "@types/express": "^4.17.8",
     "@types/node": "^14.10.1",
-    "nodemon": "^2.0.4",
+    "artillery": "^1.6.1",
+    "nodemon": "^2.0.6",
     "rimraf": "^3.0.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
