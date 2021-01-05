@@ -1,29 +1,28 @@
 {
-  "name": "spellchecker",
+  "name": "hunspell-github",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
-    "build": "rimraf ./build && tsc",
-    "start": "node build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "node": "nodemon ./src/server.ts",
-    "arti": "artillery run hunspell.yml"
+    "build": "tsc",
+    "start": "node ./build/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/karim10/hunspell.git"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "express": "^4.17.1",
-    "nodehun": "^3.0.2",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.0.2",
-    "ts-node": "^9.0.0"
+  "bugs": {
+    "url": "https://github.com/karim10/hunspell/issues"
   },
-  "devDependencies": {
-    "@types/express": "^4.17.8",
+  "homepage": "https://github.com/karim10/hunspell#readme",
+  "dependencies": {
+    "@types/express": "^4.17.9",
     "@types/node": "^14.14.20",
-    "artillery": "^1.6.1",
-    "nodemon": "^2.0.6"
+    "express": "^4.17.1",
+    "tsc": "^1.20150623.0",
+    "typescript": "^4.1.3"
   }
 }
