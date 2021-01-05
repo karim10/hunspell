@@ -1,7 +1,9 @@
-import { Nodehun } from 'nodehun';
-import fs from 'fs';
+console.log('test');
 
-const affix = fs.readFileSync('./dictionaries/en_us/en_us_med.aff');
-const dictionary = fs.readFileSync('./dictionaries/en_us/en_us_med.dic');
+// import { Nodehun } from 'nodehun';
+// import { readFileSync } from 'fs';
 
-export const nodehun = new Nodehun(affix, dictionary);
+// const affix = readFileSync('./dictionaries/en_us/en_us_med.aff');
+// const dictionary = readFileSync('./dictionaries/en_us/en_us_med.dic');
+
+// export const nodehun = new Nodehun(affix, dictionary);
