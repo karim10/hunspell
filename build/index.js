@@ -42,31 +42,44 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var nodehun_1 = require("./nodehun");
 var app = express_1.default();
-app.get('/', function (_req, res) {
-    return res.status(200).send('Hunspell');
-});
+// only for local development
 app.use(function (_req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://localhost:8080");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
 app.use(express_1.default.json({ limit: '50mb' }));
+app.get('/', function (_req, res) {
+    return res.status(200).send('Hunspell');
+});
 app.post('/spellSync', function (req, res) {
     var _a = req.body, locale = _a.locale, words = _a.words;
     var mispelledWords = words.filter(function (w) { return !nodehun_1.nodehun.spellSync(w.str); });
     return res.json(mispelledWords);
 });
 app.post('/spellAsync', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, locale, words, mispelledWords;
+    var _a, locale, words, mispelledWords, i, spellResult;
     return __generator(this, function (_b) {
-        _a = req.body, locale = _a.locale, words = _a.words;
-        mispelledWords = [];
-        words.forEach(function (w) {
-            if (!nodehun_1.nodehun.spell(w.str)) {
-                return mispelledWords.push(w);
-            }
-        });
-        return [2 /*return*/, res.json(mispelledWords)];
+        switch (_b.label) {
+            case 0:
+                _a = req.body, locale = _a.locale, words = _a.words;
+                mispelledWords = [];
+                i = 0;
+                _b.label = 1;
+            case 1:
+                if (!(i < words.length)) return [3 /*break*/, 4];
+                return [4 /*yield*/, nodehun_1.nodehun.spell(words[i].str)];
+            case 2:
+                spellResult = _b.sent();
+                if (!spellResult) {
+                    mispelledWords.push(words[i]);
+                }
+                _b.label = 3;
+            case 3:
+                i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/, res.json(mispelledWords)];
+        }
     });
 }); });
 var port = process.env.port || 4000;

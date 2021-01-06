@@ -4,18 +4,18 @@ import { SpellRequest, Word } from './types';
 
 const app = express();
 
-app.get('/', (_req, res) => {
-    return res.status(200).send('Hunspell');
+// only for local development
+app.use(function (_req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
 });
-
-// app.use(function (_req, res, next) {
-//     res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//     next();
-// });
 
 app.use(express.json({ limit: '50mb' }));
 
+app.get('/', (_req, res) => {
+    return res.status(200).send('Hunspell');
+});
 
 app.post('/spellSync', (req: express.Request<SpellRequest>, res: express.Response) => {
     const { locale, words } = req.body as SpellRequest;
@@ -26,11 +26,13 @@ app.post('/spellSync', (req: express.Request<SpellRequest>, res: express.Respons
 app.post('/spellAsync', async (req: express.Request<SpellRequest>, res: express.Response) => {
     const { locale, words } = req.body as SpellRequest;
     const mispelledWords: Word[] = [];
-    words.forEach((w) => {
-        if (!nodehun.spell(w.str)) {
-            return mispelledWords.push(w);
+
+    for (let i = 0; i < words.length; i++) {
+        const spellResult = await nodehun.spell(words[i].str);
+        if (!spellResult) {
+            mispelledWords.push(words[i]);
         }
-    })
+    }
 
     return res.json(mispelledWords);
 })
