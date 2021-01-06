@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node ./build/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon",
+    "test:load": "artillery run loadTest.yml"
   },
   "repository": {
     "type": "git",
@@ -19,10 +21,14 @@
   },
   "homepage": "https://github.com/karim10/hunspell#readme",
   "dependencies": {
+    "express": "^4.17.1",
+    "nodehun": "^3.0.2"
+  },
+  "devDependencies": {
     "@types/express": "^4.17.9",
     "@types/node": "^14.14.20",
-    "express": "^4.17.1",
-    "nodehun": "^3.0.2",
+    "artillery": "^1.6.1",
+    "ts-node": "^9.1.1",
     "tsc": "^1.20150623.0",
     "typescript": "^4.1.3"
   }

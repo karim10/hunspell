@@ -4,11 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
-var nodehun_1 = require("./nodehun");
 var app = express_1.default();
-app.get('/', function (res, req) {
-    var result = nodehun_1.nodehun.spellSync('hello');
-    req.send("result for hello: " + result);
+app.get('/', function (req, res) {
+    return res.status(200).send('Hunspell');
 });
 var port = process.env.port || 4000;
 app.listen(port, function () {

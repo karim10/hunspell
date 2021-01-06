@@ -3,10 +3,9 @@ import { nodehun } from './nodehun';
 
 const app = express();
 
-app.get('/', (res, req) => {
-    const result = nodehun.spellSync('hello');
-    req.send(`result for hello: ${result}`);
-})
+app.get('/', (req, res) => {
+    return res.status(200).send('Hunspell');
+});
 
 const port = process.env.port || 4000;
 
