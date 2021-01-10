@@ -39,69 +39,51 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = __importDefault(require("express"));
-var nodehun_1 = require("./nodehun");
-var fs = require('fs');
-var app = express_1.default();
-// only for local development
-app.use(function (_req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    res.header('Cache-Control', 'public');
-    next();
-});
-app.use(express_1.default.json({ limit: '50mb' }));
-app.get('/', function (_req, res) {
-    return res.status(200).send('Hunspell');
-});
-app.post('/spellSync', function (req, res) {
-    var _a = req.body, locale = _a.locale, words = _a.words;
-    var mispelledWords = words.filter(function (w) { return !nodehun_1.nodehun.spellSync(w.str); });
-    return res.json(mispelledWords);
-});
-app.get('/suggestAsync/:locale/:word', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, locale, word, suggestionResult;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                console.log('suggest async');
-                _a = req.params, locale = _a.locale, word = _a.word;
-                return [4 /*yield*/, nodehun_1.nodehun.suggest(word)];
-            case 1:
-                suggestionResult = _b.sent();
-                return [2 /*return*/, res.json(suggestionResult || [])];
-        }
+var body_json_1 = __importDefault(require("./body.json"));
+var node_fetch_1 = __importDefault(require("node-fetch"));
+function loopRequests() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _loop_1, i;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _loop_1 = function (i) {
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0:
+                                    console.time("request number: " + i);
+                                    return [4 /*yield*/, node_fetch_1.default('http://locahost:4000/spellAsync', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify(body_json_1.default),
+                                        }).then(function () {
+                                            console.timeEnd("request number: " + i);
+                                        }).catch(function (e) { return console.log("Error: " + e); })];
+                                case 1:
+                                    _a.sent();
+                                    setTimeout(function () {
+                                        console.log('wait for 1s');
+                                    }, 1000);
+                                    return [2 /*return*/];
+                            }
+                        });
+                    };
+                    i = 1;
+                    _a.label = 1;
+                case 1:
+                    if (!(i <= 1000)) return [3 /*break*/, 4];
+                    return [5 /*yield**/, _loop_1(i)];
+                case 2:
+                    _a.sent();
+                    _a.label = 3;
+                case 3:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
+            }
+        });
     });
-}); });
-app.post('/spellAsync', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, locale, words, mispelledWords, i, spellResult;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0:
-                _a = req.body, locale = _a.locale, words = _a.words;
-                mispelledWords = [];
-                console.time('api time');
-                i = 0;
-                _b.label = 1;
-            case 1:
-                if (!(i < words.length)) return [3 /*break*/, 4];
-                return [4 /*yield*/, nodehun_1.nodehun.suggest(words[i].str)];
-            case 2:
-                spellResult = _b.sent();
-                if (spellResult && spellResult.length > 0) {
-                    mispelledWords.push(words[i]);
-                }
-                _b.label = 3;
-            case 3:
-                i++;
-                return [3 /*break*/, 1];
-            case 4:
-                console.timeEnd('api time');
-                return [2 /*return*/, res.json(mispelledWords)];
-        }
-    });
-}); });
-var port = process.env.port || 4000;
-app.listen(port, function () {
-    console.log("Hunspell server listetning on port " + port);
-});
+}
+loopRequests();

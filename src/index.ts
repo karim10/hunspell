@@ -9,6 +9,7 @@ const app = express();
 // only for local development
 app.use(function (_req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.header('Cache-Control', 'public')
     next();
 });
@@ -21,7 +22,7 @@ app.get('/', (_req, res) => {
 
 app.post('/spellSync', (req: express.Request<SpellRequest>, res: express.Response) => {
     const { locale, words } = req.body as SpellRequest;
-    const mispelledWords = words.filter(w => !nodehun.spellSync(w.str));
+    const mispelledWords = words.filter(w => !nodehun.spellSync(w));
     return res.json(mispelledWords);
 })
 
@@ -39,11 +40,11 @@ app.post('/spellAsync', async (req: express.Request<SpellRequest>, res: express.
     // });
 
     const { locale, words } = req.body as SpellRequest;
-    const mispelledWords: Word[] = [];
+    const mispelledWords: string[] = [];
 
     console.time('api time');
     for (let i = 0; i < words.length; i++) {
-        const spellResult = await nodehun.suggest(words[i].str);
+        const spellResult = await nodehun.suggest(words[i]);
         if (spellResult && spellResult.length > 0) {
             mispelledWords.push(words[i]);
         }
@@ -56,5 +57,6 @@ app.post('/spellAsync', async (req: express.Request<SpellRequest>, res: express.
 const port = process.env.port || 4000;
 
 app.listen(port, () => {
+    console.log(nodehun.spellSync('can\'t'))
     console.log(`Hunspell server listetning on port ${port}`);
 })

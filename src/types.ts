@@ -1,6 +1,6 @@
 export interface SpellRequest {
     locale: string,
-    words: ReadonlyArray<Word>,
+    words: ReadonlyArray<string>,
 }
 
 export interface SuggestRequest {
