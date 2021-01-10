@@ -1,0 +1,20 @@
+config:
+    target: 'http://hunspell.eu-central-1.elasticbeanstalk.com'
+    phases:
+        - duration: 60
+          arrivalRate: 5
+          name: Warm up
+        - duration: 120
+          arrivalRate: 5
+          rampTo: 50
+          name: Ramp up load
+        # - duration: 600
+        #   arrivalRate: 50
+        #   name: Sustained load
+    processor: 'loadArtillery.js'
+scenarios:
+    - name: 'Spell Words'
+      flow:
+          - post:
+                url: '/spellAsync'
+                beforeRequest: 'setJSONBody'

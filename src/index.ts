@@ -2,12 +2,14 @@ import express from 'express';
 import { nodehun } from './nodehun';
 import { SpellRequest, Word } from './types';
 
+const fs = require('fs');
+
 const app = express();
 
 // only for local development
 app.use(function (_req, res, next) {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Cache-Control', 'public')
     next();
 });
 
@@ -23,16 +25,30 @@ app.post('/spellSync', (req: express.Request<SpellRequest>, res: express.Respons
     return res.json(mispelledWords);
 })
 
+app.get('/suggestAsync/:locale/:word', async (req, res) => {
+    console.log('suggest async');
+    const { locale, word } = req.params;
+    const suggestionResult = await nodehun.suggest(word);
+    return res.json(suggestionResult || []);
+})
+
 app.post('/spellAsync', async (req: express.Request<SpellRequest>, res: express.Response) => {
+    // Write body to json file
+    // fs.writeFile('body.json', JSON.stringify(req.body), () => {
+    //     console.log('done!');
+    // });
+
     const { locale, words } = req.body as SpellRequest;
     const mispelledWords: Word[] = [];
 
+    console.time('api time');
     for (let i = 0; i < words.length; i++) {
-        const spellResult = await nodehun.spell(words[i].str);
-        if (!spellResult) {
+        const spellResult = await nodehun.suggest(words[i].str);
+        if (spellResult && spellResult.length > 0) {
             mispelledWords.push(words[i]);
         }
     }
+    console.timeEnd('api time');
 
     return res.json(mispelledWords);
 })
